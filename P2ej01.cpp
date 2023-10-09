@@ -34,7 +34,7 @@ partesRutaC_t* DescomponeRutaCMal(const char* ruta) {
 
 
 void ComePila() { // Ignorar, por ahora
-	char variableLocalGrande[1000];
+	char variableLocalGrande[10000];
 	memset(&variableLocalGrande, 'W', sizeof(variableLocalGrande));
 }
 
