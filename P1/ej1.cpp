@@ -198,7 +198,7 @@ while ((nroTests--)>0){   // Solo para poder repetir el trozo de dentro
     Thread.sleep(1000); // Espera 500 ms. En C-Windows usaríamos Sleep(1000)
     dbgObj.CronoFin();
     System.out.printf("El tiempo transcurrido %f segs\n", 
-                  dbgObj.GetCronoSegs());
+                  dbgObj.CronoSegs);
 }
 
 
