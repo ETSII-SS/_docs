@@ -5,7 +5,6 @@ MUY IMPORTANTE: No añadir este directamente a ningún proyecto. Copiar siempre 
 		
 		
 // Copiar esto dentro de la función main, tras setlocale...
-setlocale(LC_ALL, "Spanish");
 // Un experimento con estructuras y uniones
 struct {
 	int entero;
