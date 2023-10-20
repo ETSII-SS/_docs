@@ -83,7 +83,7 @@ namespace ss {
 	}
 
 #pragma endregion Medicion de tiempo
-	// Eto se usa a partir del ejercicio 3.6
+	// Esto se usa a partir del ejercicio 3.14
 	
 	//vector<path> Dbg::ArchivosEnDirectorio(const char * nombreDir, bool imprimir)
 	//{
@@ -114,6 +114,4 @@ namespace ss {
 	//	}
 	//	return res;
 	//}
-	}
-
 } // Fin namespace
