@@ -119,3 +119,49 @@ vector<path> Dbg::ArchivosEnDirectorioTratamientoErroresConExcepciones(const cha
 	}
 	return res;
 }
+
+
+
+
+
+
+
+
+
+//////     SESION 2. 
+
+
+// lanza hilos usando std::thread
+static size_t tamAcumulado;
+// Punto de entrada del hilo. 
+static void CalculaTamGrupoArchivos(vector<path> listaArchivos)
+{
+	size_t tamGrupo = 0;
+	for (int i = 0; i < listaArchivos.size(); i++) {
+		tamGrupo += file_size(listaArchivos[i]);
+	}
+	tamAcumulado+= tamGrupo;
+}
+static size_t CalculaBytesEnArchivosConVariosHilos(vector<path> listaArchivos, char* ruta)
+{
+	Dbg miDgb(true); std::cout.imbue(std::locale(""));
+	miDgb.CronoInicio();
+
+	int nroHilos = 1;
+	thread * hilos= new thread[nroHilos];
+	tamAcumulado = 0;
+	for (int i = 0; i < nroHilos; i++)
+	{
+		hilos[i] = thread(CalculaTamGrupoArchivos, listaArchivos);
+		miDgb.CheckError(hilos[i].native_handle() == NULL, "No se pudo crear hilo");
+	}
+
+	miDgb.CronoFin();
+	cout << listaArchivos.size() << " Archivos en el directorio " << ruta << "\n   ";
+	cout << tamAcumulado << " bytes.\n";
+	cout << "    Calculado en: " << miDgb.CronoSegs << " segs por " << __FUNCTION__ << "\n";
+	return tamAcumulado;
+}
+
+
+
