@@ -142,12 +142,11 @@ static void CalculaTamGrupoArchivos(vector<path> listaArchivos)
 	}
 	tamAcumulado+= tamGrupo;
 }
-static size_t CalculaBytesEnArchivosConVariosHilos(vector<path> listaArchivos, char* ruta)
+static size_t CalculaBytesEnArchivosConVariosHilos(vector<path> listaArchivos, char* ruta, int nroHilos)
 {
 	Dbg miDgb(true); std::cout.imbue(std::locale(""));
 	miDgb.CronoInicio();
 
-	int nroHilos = 1;
 	thread * hilos= new thread[nroHilos];
 	tamAcumulado = 0;
 	for (int i = 0; i < nroHilos; i++)
@@ -159,9 +158,91 @@ static size_t CalculaBytesEnArchivosConVariosHilos(vector<path> listaArchivos, c
 	miDgb.CronoFin();
 	cout << listaArchivos.size() << " Archivos en el directorio " << ruta << "\n   ";
 	cout << tamAcumulado << " bytes.\n";
-	cout << "    Calculado en: " << miDgb.CronoSegs << " segs por " << __FUNCTION__ << "\n";
+	cout << "    Calculado en: " << miDgb.CronoSegs << " segs por " << __FUNCTION__ << " (" << nroHilos<< ") hilos. \n\n";
 	return tamAcumulado;
 }
 
 
+
+
+
+
+// Código parcial de la función BuscaTextoEnArchivos
+miDgb.CronoInicio();
+cout << std::fixed << setprecision(2);// Formato floats con 2 decimales. 
+char marcasAvance[] = "-\\|/"; // Para animación simple
+unsigned int idxMarca = 0;
+size_t bytesAcumulados = 0;
+miDgb.Print("\nBuscando texto \"%s\" en directorio %s \n",
+	textoABuscar, dirBusqueda.lexically_normal().string().c_str());
+	
+for (auto x : listaArchivos) {
+	int ocurrencias = miDgb.BuscaDatoEnArchivo(textoABuscar, strlen(textoABuscar),
+		x.string().c_str(), bytesAcumulados);
+	if (ocurrencias > 0) {
+		nroVeces.push_back(ocurrencias);
+		encontrados.push_back(x);
+	}
+	// Muestra el avance del proceso
+	if (bytesTotal > 0) {
+		miDgb.Print("\r%.02f %%     %c         ", (double)bytesAcumulados * 100 / bytesTotal,
+			marcasAvance[idxMarca++ % (sizeof(marcasAvance) - 1)]);
+	}
+}
+
+if (encontrados.size() > 0) {
+	miDgb.Print("\nEncontrado en:\n");
+	for (int i = 0; i < encontrados.size(); i++) {
+		miDgb.Print("(%d)  %s\n ", nroVeces[i], encontrados[i].lexically_normal().string().c_str());
+	}
+}
+else {
+	miDgb.Print("\n     No se encontro en ningun archivo\n");
+}
+
+miDgb.CronoFin();
+cout << listaArchivos.size() << " Archivos en el directorio " << dirBusqueda.lexically_normal() << "\n   ";
+cout << bytesTotal << " bytes.\n";
+cout << "    Calculado en: " << miDgb.CronoSegs << " segs por " << __FUNCTION__ << "\n";
+
+
+
+
+
+
+// Método BuscaDatoEnArchivo, de la clase Dbg:
+// devuelve el número de veces que se encuentra el bloque a buscar
+// dentro de un archivo. También modifica incrementa bytesPorAhora con 
+// el tamaño del archivo. 
+int BuscaDatoEnArchivo(char* block, size_t blockSize, const char* fileName,
+	size_t bytesPorAhora, int tamBuffer) {
+// Abre archivo
+ifstream   file(fileName, std::ios::binary);
+int res = 0;
+if (!file.is_open()) {
+	// No se pudo abrir el archivo.
+	return -1;
+}
+char* buffer = new char[tamBuffer];
+int idxBusqueda = 0;
+while (file.read(buffer, tamBuffer)) {
+	size_t bytesRead = file.gcount();
+	bytesPorAhora += bytesRead;
+	for (size_t i = 0; i < bytesRead; i++) {
+		if (buffer[i] == block[idxBusqueda]) {
+			idxBusqueda++;
+			if (idxBusqueda == blockSize) {
+				res++;
+				idxBusqueda = 0;
+			}
+		}
+		else {
+			idxBusqueda = 0;
+		}
+	}
+}
+delete[] buffer;  // delete aplicado a matriz.
+file.close();
+return res;
+}
 
