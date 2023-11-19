@@ -214,7 +214,7 @@ cout << "    Calculado en: " << miDgb.CronoSegs << " segs por " << __FUNCTION__ 
 // devuelve el número de veces que se encuentra el bloque a buscar
 // dentro de un archivo. También modifica incrementa bytesPorAhora con 
 // el tamaño del archivo. 
-int BuscaDatoEnArchivo(char* block, size_t blockSize, const char* fileName,
+int Dbg::BuscaDatoEnArchivo(char* block, size_t blockSize, const char* fileName,
 	size_t bytesPorAhora, int tamBuffer) {
 // Abre archivo
 ifstream   file(fileName, std::ios::binary);
