@@ -1,8 +1,8 @@
 ...
 
 // Copiar esto dentro de la función main, tras setlocale...
-int tout(10);
-int tecla(0);
+int tout= 0; 	// Opcional (solo C++):   int tout(10);  
+int tecla= 0; 	// Opcional (solo C++):   int tecla(0);
 for (int i = 0; i < tout; i++)
 {
 	printf("Pulsa una tecla antes de %d segundos\n", tout -i);
@@ -17,7 +17,7 @@ else
 
 ...
 
-// y esto a su archivo nusuario-P1_a.cpp
+// y esto a su archivo nusuario-P1a.cpp
 int esperaPulseTecla(int toutMs)
 {
 	int res = 0;
