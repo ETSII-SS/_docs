@@ -1,7 +1,7 @@
 ...
 
 // Copiar esto dentro de la función main, tras setlocale...
-int tout= 0; 	// Opcional (solo C++):   int tout(10);  
+int tout= 10; 	// Opcional (solo C++):   int tout(10);  
 int tecla= 0; 	// Opcional (solo C++):   int tecla(0);
 for (int i = 0; i < tout; i++)
 {
