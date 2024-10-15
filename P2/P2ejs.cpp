@@ -104,7 +104,8 @@ void TestClase() {
 
 
 /// En Java, la prueba básica de una clase similar a Crono sería
-Crono crono= new Crono();  
+Crono crono;
+crono= new Crono();  
 crono.Inicio();
 Thread.sleep(1200); // Espera 1200 ms. En C-Windows usaríamos Sleep(1200)
 float segs= crono.Lee();
