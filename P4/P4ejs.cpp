@@ -33,3 +33,157 @@ static void ImprimeArchivosEnDirectorio(char* listaArchivos[]) {
 		i++;
 	}
 }
+
+
+// Sesión 2
+//Ejercicio inicial: 
+
+using namespace std;
+static size_t tamAcumulado = 0;
+static size_t CalculaBytesEnArchivos(char* listaArchivos[], int nroArchivos) {
+	size_t total = 0;
+	int i = 0;
+	WIN32_FILE_ATTRIBUTE_DATA info;
+	for (i = 0; i < nroArchivos; i++) {
+		if (_dbg.CheckError(FALSE ==
+			GetFileAttributesExA(listaArchivos[i], GetFileExInfoStandard, &info),
+			"Error en GetFileAttributesExA para el archivo %s\n", listaArchivos[i]))
+			continue;  // Salta a la siguiente iteración del bucle si hay error
+		int64_t tam = ((int64_t)info.nFileSizeHigh >> 32) + info.nFileSizeLow;
+		total += tam;
+	}
+	return total;
+}
+static size_t CalculaBytesEnArchivosConVariosHilos(
+	char* ruta, unsigned int hilosAdicionales, bool usaUltimaBusqueda) {
+	static FileSys fs;
+	static char** plistaArchivos = nullptr;
+	static int encontrados = 0;
+	if (!usaUltimaBusqueda) {
+		plistaArchivos = fs.ArchivosEnDirectorio(&encontrados, ruta, false);
+		if (!MuestraNroArchivosEncontradosEnDirectorio(encontrados, ruta))
+			return 0;
+		printf("\t\tLa búsqueda de archivos ha tardado %f segs\n", fs.TiempoUltimoMetodo());
+	}
+	_dbg.CronoInicio();
+	size_t tamTotal = 0;
+	tamTotal = CalculaBytesEnArchivos(plistaArchivos, encontrados);
+	auto segs = _dbg.CronoLee();
+	printf("\tCalculados %lld bytes\n", tamTotal);
+	printf("\t\tCalculado en: %f segs por %s (%d hilos adicionales).\n\n", segs, __FUNCTION__, hilosAdicionales);
+	return tamTotal;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if (hilosAdicionales == 0) 
+		tamTotal = CalculaBytesEnArchivos(plistaArchivos, encontrados); // Ejecución síncrona
+	else { // Aquí irá la ejecución asíncrona.
+		tamTotal = BytesEnArchivosHilo(plistaArchivos, encontrados); 
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if (hilosAdicionales == 0) 
+		tamTotal = CalculaBytesEnArchivos(plistaArchivos, encontrados); // Ejecución síncrona
+	else { // Ejecución asíncrona.
+		thread* hilos = new thread[hilosAdicionales]; // reserva memoria para la matriz de hilos
+		for (int i = 0; i < hilosAdicionales; i++) {
+			hilos[i] = thread(BytesEnArchivosHilo, plistaArchivos, encontrados);
+			_dbg.CheckError(hilos[i].native_handle() == NULL, "no se pudo crear hilo");
+		}
+		delete[] hilos;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	static int BuscaTextoEnArchivos(const char* dirBusqueda, const char* textoABuscar) {
+	Dbg dbg;
+	FileSys fs;
+	int ocurrencias, encontrados = 0, nroArchivos, idxMarca = 0;
+	char** listaArchivos = fs.ArchivosEnDirectorio(&nroArchivos, dirBusqueda, false);
+	if (dbg.CheckError(listaArchivos == nullptr, "No se han encontrado archivos en la carpeta %s\n", dirBusqueda)) {
+		return -1;
+	}
+	char marcasAvance[] = "-\\|/"; // Para animación simple
+	size_t bytesTotal, bytesAcumulados = 0;
+	bytesTotal = CalculaBytesEnArchivos(listaArchivos, nroArchivos);
+	if (dbg.CheckError(bytesTotal == 0, "No se han encontrado archivos en la carpeta %s\n", dirBusqueda)) {
+		return -1;
+	}
+	MuestraNroArchivosEncontradosEnDirectorio(nroArchivos, (char*)dirBusqueda);
+	printf("\nBuscando texto \"%s\" en %lld bytes\n", textoABuscar, bytesTotal);
+
+	dbg.CronoInicio();
+	for (int i = 0; i < nroArchivos; i++) {
+		// Busca el texto en el archivo usando un método de FileSys
+		ocurrencias = fs.BuscaDatoEnArchivo(textoABuscar, strlen(textoABuscar),
+			listaArchivos[i], &bytesAcumulados, 10000);
+		if (ocurrencias > 0) {
+			encontrados++;
+			dbg.DbgPrint("#%d: %d ocurrencias en %s\n", encontrados, ocurrencias, listaArchivos[i]);
+		}
+		else if (ocurrencias < 0) {
+			dbg.DbgPrint("Error %s\n", listaArchivos[i]);
+		}
+		// Muestra el avance del proceso
+		if (i == nroArchivos - 1)
+			bytesAcumulados = bytesTotal; // Para que muestre 100% al final, aunque no sea exacto
+		printf("\r%c  %.02f %%   %d/%d   ", marcasAvance[idxMarca++ % (sizeof(marcasAvance) - 1)],
+			(double)bytesAcumulados * 100 / bytesTotal, i + 1, nroArchivos);
+	}
+	double segs = dbg.CronoLee();
+	printf("\nSe han encontrado %d archivos con el texto\n", encontrados, textoABuscar, dirBusqueda);
+	printf("\t\tCalculado en: %f segs por %s\n", segs, __FUNCTION__);
+	return encontrados;
+}
