@@ -23,6 +23,10 @@ int esperaPulseTecla(int toutMs)
 	int res = 0;
 	int antes = GetTickCount();
 	int ahora;
+	if (toutMs < 0)	{
+		printf("ERROR: esperaPulseTecla: el tiempo de espera no puede ser negativo\n");
+		exit(EXIT_FAILURE);
+	}
 	do {
 		if (_kbhit())
 		{
