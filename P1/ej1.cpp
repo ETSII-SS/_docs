@@ -112,6 +112,19 @@ void LeeFabricanteCPU(char fabricante[], int tamfabricante)
 	}
 }
 
+// Para probarlo, sustituir el código en main el código del ejercicio anterior por este:
+	char fab[13]; 
+	LeeFabricanteCPU(fab, sizeof(fab));
+	printf("El fabricante de la CPU es: %s\n", fab);
+
+
+
+
+
+
+
+
+
 
 void  LeeModeloCPU(char modelo[], int tamModelo)
 {
