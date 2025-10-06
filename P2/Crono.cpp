@@ -9,11 +9,11 @@ bool CronoInicio()
 	//   Esta frecuencia depende del hardware del PC y no cambia durante la ejecución del programa
 	if (_ticsPorSegundoDelTimerDelPC < 0){
 		// No se ha calculado la frecuencia aún. Se calcula ahora
-		LARGE_INTEGER frequencia;
+		LARGE_INTEGER frecuencia;
 		char* _cadDbg = (char*)"inicializacion puntero a cadena";
 
-		if (QueryPerformanceFrequency(&frequencia))	{
-			_ticsPorSegundoDelTimerDelPC = frequencia.QuadPart;
+		if (QueryPerformanceFrequency(&frecuencia))	{
+			_ticsPorSegundoDelTimerDelPC = frecuencia.QuadPart;
 			snprintf(_cadDbg, sizeof(_cadDbg), "La frecuencia del contador del PC es %d Hz\n",
 				_ticsPorSegundoDelTimerDelPC);
 			OutputDebugStringA(_cadDbg);
