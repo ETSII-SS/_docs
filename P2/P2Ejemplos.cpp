@@ -19,10 +19,12 @@ struct Persona {
 };
 
 void ejemplo1() {
-    struct Persona p1;        // En C: hay que escribir 'struct Persona'
+    struct Persona p1, *pp;        // En C: hay que escribir 'struct Persona'
     p1.edad = 25;
     strcpy(p1.nombre, "Ana");
+	pp= &p1;
     printf("Edad: %d, Nombre: %s\n", p1.edad, p1.nombre);
+	printf("Edad: %d, Nombre: %s   (usando puntero)\n", pp->edad, pp->nombre);
 }
 
 // ---------------------------------------------------------------------------
@@ -36,6 +38,8 @@ struct Punto {
 void ejemplo2() {
     p1.x = 10;  p1.y = 20;
     printf("(%d, %d)\n", p1.x, p1.y);
+	struct Punto *ppunto= &p1;
+    printf("(%d, %d)\n", ppunto->x, ppunto->y);	
 }
 
 // ---------------------------------------------------------------------------
