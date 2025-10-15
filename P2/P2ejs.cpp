@@ -62,7 +62,7 @@ int main(int argc, char* argv[], char* envp[])
 	
 	
 	
-// Declaraciones asociadas a una clase.
+// Declaraciones asociadas a una clase (normalmente van en un archivo .h)
 // Namespace: agrupación de clases, funciones y variables globales
 namespace ss {
 	
@@ -75,11 +75,9 @@ namespace ss {
 		~Crono(); // Destructor (opcional)
 		
 	}; // fin clase
-	
-	
 } // fin namespace ss
 
-// Definiciones asociadas a una clase.
+// Definiciones asociadas a una clase (normalmente van en un archivo .cpp)
 namespace ss {  // Namespace: agrupación de clases, funciones y variables globales
 
 	// Definición del constructor
@@ -124,3 +122,24 @@ printf("Valores tras la llamada printf: var1=%d, var2[0]=%d, var3.entero=%d, var
 	var1, var2[0], var3.entero, var4.entero, var5.entero);
 
 
+
+
+void MideEjecucionTestParametros()
+{
+	int var1 = 1;
+	int var2[3] = { 2, 3, 4 };
+	Struct1_t var3 = { 5 };
+	Union1_t var4 = { 6 };
+	Clase1	var5; var5.entero = 7;
+	ss::Crono crono;
+
+	crono.Inicio();
+	int nroLlamadas = 100000;
+	for (int i = 0; i < nroLlamadas; i++) {
+		TestParametros(50, var1, var2, var3, var4, var5);
+	}
+	double segs = crono.Lee();
+	printf("Tiempo empleado en %d llamadas a TestParametros: %f segundos.\n", nroLlamadas, segs);
+	printf("Valores tras la llamada printf: var1=%d, var2[0]=%d, var3.entero=%d, var4.entero=%d, var5.entero=%d\n",
+		var1, var2[0], var3.entero, var4.entero, var5.entero);
+}
