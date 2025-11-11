@@ -1,7 +1,7 @@
-MUY IMPORTANTE: No añadir este directamente a ningún proyecto. Copiar siempre los trozos de código 
-        que se indican en cada ejercicio a archivos ya existentes. 
-		
-		
+MUY IMPORTANTE: No añadir este directamente a ningún proyecto. Copiar siempre los trozos de código
+        que se indican en cada ejercicio a archivos ya existentes.
+
+
 
 // Copiar esto dentro de la función main, tras setlocale...
 
@@ -11,10 +11,10 @@ FileSys fs;
 
 const char* pDir = ".";
 int encontrados;
-char** plistaArchivos;  // Este tipo se puede usar como dirección de una matriz de punteros a char. 
+char** plistaArchivos;  // Este tipo se puede usar como dirección de una matriz de punteros a char.
 // Es similar a char* envp[], pero esa nomenclatura se puede usar en una definición de variable.
 
-plistaArchivos = fs.ArchivosEnDirectorio(&encontrados, "."); 
+plistaArchivos = fs.ArchivosEnDirectorio(&encontrados, ".");
 dbg.CheckError(plistaArchivos == nullptr, 1, "No se han encontrado archivos en la carpeta %s\n", pDir);
 
 printf("Se han encontrado %d archivos en la carpeta %s\n", encontrados, pDir);
@@ -36,7 +36,7 @@ static void ImprimeArchivosEnDirectorio(char* listaArchivos[]) {
 
 
 // Sesión 2
-//Ejercicio inicial: 
+//Ejercicio inicial:
 
 using namespace std;
 static size_t tamAcumulado = 0;
@@ -49,7 +49,7 @@ static size_t CalculaBytesEnArchivos(char* listaArchivos[], int nroArchivos) {
 			GetFileAttributesExA(listaArchivos[i], GetFileExInfoStandard, &info),
 			"Error en GetFileAttributesExA para el archivo %s\n", listaArchivos[i]))
 			continue;  // Salta a la siguiente iteración del bucle si hay error
-		int64_t tam = ((int64_t)info.nFileSizeHigh >> 32) + info.nFileSizeLow;
+		int64_t tam = ((int64_t)info.nFileSizeHigh << 32) + info.nFileSizeLow;
 		total += tam;
 	}
 	return total;
@@ -59,7 +59,7 @@ static size_t CalculaBytesEnArchivosConVariosHilos(
 	static FileSys fs;
 	static char** plistaArchivos = nullptr;
 	static int encontrados = 0;
-	if (!usaUltimaBusqueda) {
+	if (!usaUltimaBusqueda || plistaArchivos == nullptr) {
 		plistaArchivos = fs.ArchivosEnDirectorio(&encontrados, ruta, false);
 		if (!MuestraNroArchivosEncontradosEnDirectorio(encontrados, ruta))
 			return 0;
@@ -89,10 +89,10 @@ static size_t CalculaBytesEnArchivosConVariosHilos(
 
 
 
-	if (hilosAdicionales == 0) 
+	if (hilosAdicionales == 0)
 		tamTotal = CalculaBytesEnArchivos(plistaArchivos, encontrados); // Ejecución síncrona
 	else { // Aquí irá la ejecución asíncrona.
-		tamTotal = BytesEnArchivosHilo(plistaArchivos, encontrados); 
+		tamTotal = BytesEnArchivosHilo(plistaArchivos, encontrados);
 	}
 
 
@@ -115,7 +115,7 @@ static size_t CalculaBytesEnArchivosConVariosHilos(
 
 
 
-if (hilosAdicionales == 0) 
+if (hilosAdicionales == 0)
 		tamTotal = CalculaBytesEnArchivos(plistaArchivos, encontrados); // Ejecución síncrona
 	else { // Ejecución asíncrona.
 		thread* hilos = new thread[hilosAdicionales]; // reserva memoria para la matriz de hilos
@@ -125,28 +125,28 @@ if (hilosAdicionales == 0)
 		}
 		delete[] hilos;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	static int BuscaTextoEnArchivos(const char* dirBusqueda, const char* textoABuscar) {
 	Dbg dbg;
 	FileSys fs;
