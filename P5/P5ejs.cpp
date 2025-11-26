@@ -21,6 +21,7 @@ static bool TestHiloNoReentranteSimple(int nroIncrementos, int nroHilos) {
 	}
 	for (int i = 0; i < nroHilos; i++)
 		hilos[i].join();
+	delete[] hilos;
 	printf("Contador vale: %d (calculado con %d hilos)\n", contador, nroHilos);
 	return contador == 0;
 }
@@ -60,6 +61,7 @@ static void TestTurnos(int nroHilos) {
 	}
 	for (int i = 0; i < nroHilos; i++)
 		hilos[i].join();
+	delete[] hilos;
 	return;
 }
 
@@ -75,14 +77,13 @@ static void TestTurnos(int nroHilos) {
 
 static void TestTurnos_Ev(int nroHilos) {
 	bool res = true;
-	Dbg dbg(true);
 	HANDLE actual, siguiente;
 	actual = CreateEventA(NULL, FALSE, FALSE, NULL);
-	_dbg.CheckError(actual == NULL, 1, "No se pudo crear el evento inicial\n");
+	dbg.CheckError(actual == NULL, 1, "No se pudo crear el evento inicial\n");
 	thread* hilos = new thread[nroHilos];
 	for (int i = 0; i < nroHilos; i++) {
 		siguiente = CreateEventA(NULL, FALSE, FALSE, NULL);
-		_dbg.CheckError(siguiente == NULL, 2, "No se pudo crear el evento inicial\n");
+		dbg.CheckError(siguiente == NULL, 2, "No se pudo crear el evento inicial\n");
 		hilos[i] = thread(TurnosHilo_Ev, i, actual, siguiente);
 		actual = siguiente;
 		dbg.CheckError(hilos[i].native_handle() == NULL, "No se pudo crear el hilo");
@@ -99,12 +100,11 @@ static void TestTurnos_Ev(int nroHilos) {
 
 static void TestTurnos_Ev2(int nroHilos) {
 	bool res = true;
-	Dbg dbg(true);
 	thread* hilos = new thread[nroHilos];
 	HANDLE* turnos = new HANDLE[nroHilos];
 	for (int i = 0; i < nroHilos; i++) {
 		turnos[i] = CreateEventA(NULL, FALSE, FALSE, NULL);
-		_dbg.CheckError(turnos[i] == NULL, 2, "No se pudo crear el evento inicial\n");
+		dbg.CheckError(turnos[i] == NULL, 2, "No se pudo crear el evento inicial\n");
 		hilos[i] = thread(TurnosHiloBeep, i, turnos, nroHilos);
 		dbg.CheckError(hilos[i].native_handle() == NULL, "No se pudo crear el hilo");
 	}
